@@ -12,7 +12,7 @@ void setup() {
   size(640, 480); 
 
   physics = new VerletPhysics2D();
-  //physics.addBehavior(new GravityBehavior(new Vec2D(0,0,5)));
+  physics.addBehavior(new GravityBehavior2D(new Vec2D(0,0.5)));
   physics.setDrag(0.05f);
 
   //World Boundaries
@@ -20,7 +20,7 @@ void setup() {
 
   //2 Particles
   p1=new Particle(new Vec2D(width/2, 20));
-  p1=new Particle(new Vec2D(width/2+80, 20));
+  p2=new Particle(new Vec2D(width/2+80, 20));
   //Locking p1 in place
   p1.lock();
 
