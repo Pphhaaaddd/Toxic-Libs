@@ -43,9 +43,10 @@ Particle[][] p;
 ArrayList<Spring> s;
 
 AttractionBehavior2D mouseAttractor;
-Vec2D mousePos;
+GravityBehavior2D wind;
 
 int w=10, cols =40, rows=40;
+float t=0;
 
 void setup() {
   size(1280, 720, P2D);
@@ -111,21 +112,21 @@ void draw() {
   for (Spring s : s) {
     s.display();
   }
+  t+=0.01;
 }
 
 void mousePressed() {
-  mousePos = new Vec2D(mouseX, mouseY);
-  // create a new positive attraction force field around the mouse position (radius=250px)
-  mouseAttractor = new AttractionBehavior2D(mousePos, 250, 0.9f);
-  physics.addBehavior(mouseAttractor);
+  wind = new GravityBehavior2D(new Vec2D(map(noise(t), 0, 1, -2, 2), 0));
+  physics.addBehavior(wind);
 }
 
-void mouseDragged() {
-  // update mouse attraction focal point
-  mousePos.set(mouseX, mouseY);
-}
+//void mouseDragged() {
+//  // update mouse attraction focal point
+
+//  mousePos.set(mouseX, mouseY);
+//}
 
 void mouseReleased() {
   // remove the mouse attraction when button has been released
-  physics.removeBehavior(mouseAttractor);
+  physics.removeBehavior(wind);
 }
