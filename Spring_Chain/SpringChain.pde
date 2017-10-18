@@ -1,6 +1,8 @@
 class SpringChain extends VerletParticle2D {
 
-  int num=5, len = 200;
+  int num=10, len = 300;
+  float sLen = len/num;
+  
   ArrayList<Particle> p;
   ArrayList<VerletSpring2D> spring;
 
@@ -13,12 +15,13 @@ class SpringChain extends VerletParticle2D {
     //Lock First Particle
     p.get(0).lock();
     for(int i=1;i<num;i++)
-      p.add(new Particle(loc.add(new Vec2D(0, float(len/num)))));
+      p.add(new Particle(loc.add(new Vec2D(i*5, 1.5*i*sLen))));
     
 
     // Spring connection
     spring = new ArrayList<VerletSpring2D>();
-    spring.add(new VerletSpring2D(p.get(0), p.get(1), float(len/num), 0.05));
+    for(int i=1;i<num;i++)
+      spring.add(new VerletSpring2D(p.get(i-1), p.get(i), sLen, 0.05));
 
     //Add the particles to the physics world
     for (Particle p : p)
