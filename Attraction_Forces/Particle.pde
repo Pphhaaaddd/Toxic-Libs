@@ -16,7 +16,7 @@ class Particle extends VerletParticle2D {
     
     physics.addParticle(this);
     physics.addBehavior(new AttractionBehavior2D(this,width/1.5,1));
-    //physics.addBehavior(new AttractionBehavior2D(this,size,-4));
+    physics.addBehavior(new AttractionBehavior2D(this,size,-5));
     size = size_;
     this.lock();
     c = color (200,15,15);
