@@ -42,10 +42,13 @@ VerletPhysics2D physics;
 Particle[][] p;
 ArrayList<Spring> s;
 
-int w=10, cols =40, rows=10;
+AttractionBehavior2D mouseAttractor;
+Vec2D mousePos;
+
+int w=10, cols =40, rows=40;
 
 void setup() {
-  size(640, 480, P2D);
+  size(1280, 720, P2D);
 
   p = new Particle[cols][rows];
   s = new ArrayList<Spring>();
@@ -62,28 +65,36 @@ void setup() {
     for (int j=0; j<rows; j++) {
       p[i][j] = new Particle(x, y);
 
-      //if (j != 0) {
-      //  s.add(new Spring(p.get(j-1), p.get(j)));
-      //  physics.addSpring(s.get(j-1));
-      //}
-
       y+=w;
       physics.addParticle(p[i][j]);
     }
     x+=w;
   }
-  for (int i=0; i<cols-1; i++) {
+  for (int i=0; i<cols; i++) {
     for (int j=0; j<rows; j++) {
-      Particle p1 = p[i][j];
-      Particle p2 = p[i+1][j];  
-      
-      Spring s1 = new Spring(p1,p2); 
-      s.add(s1);
-      physics.addSpring(s1);
+      if (i<cols-1) {
+        Particle p1 = p[i][j];
+        Particle p2 = p[i+1][j];  
+
+        Spring s1 = new Spring(p1, p2); 
+        s.add(s1);
+        physics.addSpring(s1);
+      }
+
+      if (j<rows-1) {
+        Particle p1 = p[i][j];
+        Particle p2 = p[i][j+1];  
+
+        Spring s1 = new Spring(p1, p2); 
+        s.add(s1);
+        physics.addSpring(s1);
+      }
     }
   }
+
   p[0][0].lock();
-  p[0][rows-1].lock();
+  p[cols/2][0].lock();
+  p[cols-1][0].lock();
 }
 
 void draw() {
@@ -92,12 +103,29 @@ void draw() {
   physics.update();
   background(0);
 
-  for (int i=0; i<cols; i++) {
-    for (int j=0; j<rows; j++) {
-      p[i][j].display();
-    }
-  }
+  //for (int i=0; i<cols; i++) {
+  //  for (int j=0; j<rows; j++) {
+  //    p[i][j].display();
+  //  }
+  //}
   for (Spring s : s) {
     s.display();
   }
+}
+
+void mousePressed() {
+  mousePos = new Vec2D(mouseX, mouseY);
+  // create a new positive attraction force field around the mouse position (radius=250px)
+  mouseAttractor = new AttractionBehavior2D(mousePos, 250, 0.9f);
+  physics.addBehavior(mouseAttractor);
+}
+
+void mouseDragged() {
+  // update mouse attraction focal point
+  mousePos.set(mouseX, mouseY);
+}
+
+void mouseReleased() {
+  // remove the mouse attraction when button has been released
+  physics.removeBehavior(mouseAttractor);
 }
